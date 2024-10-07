@@ -62,37 +62,56 @@ def code_words(txt):  # processo de tokenazação.
     return txt
 
 
-def process(instruction, code, tabs=0):
-    if ">>" in instruction:
-        tabs += 1
-        tokens, rest = instruction.split(">>", 1)
+def indent(txt, tabs):
+    tabs = "\t" * tabs
 
-        tags = process(rest, code, tabs)
+    txt = txt.replace("\n", "\n" + tabs)
+    return txt
 
-    else:
-        tokens = instruction
-        tags = ""  # e aqui as tags se ouver uma dentro
 
-    tokens = tokens.split()
+def transforming_tokens(instruction, dict):
+    tokens = instruction.split()
     paragrafo = None
     p = None
     for i in tokens:  # utilizado para construir o cabeçalho da tag
 
-        if i in code and paragrafo is None:
-            paragrafo = code[i]  # Inicia o parágrafo com o valor de 'code[i]'
+        if i in dict and paragrafo is None:
+            paragrafo = dict[i]  # Inicia o parágrafo com o valor de 'dict[i]'
             p = i  # Marca o índice atual
 
         try:
-            # Verifica se 'i' está contido dentro do valor de 'code[p]'
-            if p and i in code[p]:
+            # Verifica se 'i' está contido dentro do valor de 'dict[p]'
+            if p and i in dict[p]:
                 pass  # Apenas um exemplo, aqui vai sua lógica
         except KeyError:  # Usar KeyError, pois é o erro esperado ao acessar um dicionário com chave inválida
             print("Elemento não encontrado")
+    return paragrafo
+
+
+def process(instruction, dict, tabs=-1):
+    if ">>" in instruction:
+        tabs += 1
+        instruction, rest = instruction.split(">>", 1)
+
+        content = process(rest, dict, tabs)
+
+    else:
+        tabs += 1
+        content = "\n olhaa"
+        content = indent(content, tabs)  # e aqui as tags se ouver uma dentro
+        # futuramente adicionar procesamento de conteudo dentro de tags
+
+    paragrafo = transforming_tokens(instruction, dict)
+    paragrafo = indent(paragrafo, tabs)
+    # na realidade paragrafo nao e um nome muito  apropriado utilisei apenas como um nome axiliar mas o bloco html e a junção das configs e o conteudo
 
     configs = ""  # que futuramente ira originar a config
-    txt_box = tags   # aqui e o bloco aninhado completo
+    # aqui e o bloco aninhado completo
+
     if paragrafo:
-        paragrafo = paragrafo.format(configs, txt_box)
+
+        paragrafo = paragrafo.format(configs, content)
+        print(f"part {tabs}:\n" + paragrafo)
 
     else:
         paragrafo = "Elemento não encontrado no código."

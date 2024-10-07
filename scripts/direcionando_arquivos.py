@@ -53,3 +53,5 @@ def chose_arq(lis, caminho):
     decision -= 1
     if decision in range(0, len(lis)):
         return f"{caminho}\{lis[decision]}"
+    
+    

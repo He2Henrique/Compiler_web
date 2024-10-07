@@ -18,7 +18,7 @@ instru_s = code_words(txt)
 # contruindo o interpretador
 for instru in instru_s:
     paragafo = process(instru, code)
-    content += paragafo + "\n\n"
+    content += paragafo + "\n"
 
 
 print(content)
